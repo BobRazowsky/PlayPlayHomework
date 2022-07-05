@@ -19,6 +19,8 @@ const TextManager = function () {
 		this.lettersContainer = new PIXI.Container()
 		const backgroundLetters = this.divideByLetters(message, Utils.hexToBinary(Store.state.textBackground))
 		const letters = this.divideByLetters(message, Utils.hexToBinary(Store.state.textColor))
+
+		// letters and background letters are unified here to allow identic shuffling
 		const unitedLetters = []
 		for (let l = 0; l < letters.length; l++) {
 			unitedLetters.push({
@@ -27,12 +29,20 @@ const TextManager = function () {
 			})
 		}
 		const shuffledLetters = this.shuffle(unitedLetters)
+
 		for (let i = 0; i < shuffledLetters.length; i++) {
 			this.animateLetter(shuffledLetters[i].backgroundLetter, i, 0, message.length, false)
 			this.animateLetter(shuffledLetters[i].letter, i, 200, message.length, true)
 		}
 	}
 
+	/**
+	* Returns the message divided by letter and wrapped to fit container width
+	* 
+	* @param    {String}         message       The text to write
+	* @param    {Binary Color}   color         The color to write the text with
+	* @returns  {Array}          letters       The resulting letters
+	*/
 	this.divideByLetters = (message, color) => {
 		let letters = []
 		let spaceWidth = 16
@@ -47,7 +57,7 @@ const TextManager = function () {
 		text.updateText()
 		PixiManager.container.addChild(this.lettersContainer)
 
-		let lineLengthes = this.getTextLinesLengthes(message)
+		let lineLengthes = this.getTextLinesLengthes(message, this.style)
 		const words = message.split(' ')
 
 		let currentPos = 0
@@ -56,11 +66,9 @@ const TextManager = function () {
 
 			const wd = words[i]
 			const wordSize = this.textSize(wd, this.style)
-			console.log(wordSize, this.textSize(`${wd} `, this.style))
 			if (currentPos + wordSize > PixiManager.width - this.padding * 2) {
 				line ++
 				currentPos = 245 - lineLengthes[line] / 2
-				console.log(currentPos)
 			} else if (i !== 0 && i < words.length) {
 				currentPos += spaceWidth
 			}
@@ -108,8 +116,8 @@ const TextManager = function () {
 		// LETTERS WAVING
 		if (animateY) {
 
-			let spreadY = 3;
-			let spreadX = 0.8;
+			let spreadY = 3
+			let spreadX = 0.8
 
 			TimelineManager.timeline.add({
 				targets: letter,
@@ -129,7 +137,7 @@ const TextManager = function () {
 				],
 				duration: 4000,
 				delay: index * 10,
-				easing: 'steps(4)',
+				easing: 'steps(4)'
 			}, 0)
 
 			TimelineManager.timeline.add({
@@ -150,7 +158,7 @@ const TextManager = function () {
 				],
 				duration: 4000,
 				delay: index * 10,
-				easing: 'steps(4)',
+				easing: 'steps(4)'
 			}, 0)
 		}
 	}
@@ -158,7 +166,7 @@ const TextManager = function () {
 	this.textSize = (text, style) => {
 		let size = 0
 		for (let i = 0; i < text.length; i++) {
-			let sample = new PIXI.Text(text[i], style);
+			let sample = new PIXI.Text(text[i], style)
 			let bounds = sample.getLocalBounds()
 			size += bounds.width
 		}
@@ -166,12 +174,12 @@ const TextManager = function () {
 		return size
 	}
 
-	this.getTextLinesLengthes = (message) => {
+	this.getTextLinesLengthes = (message, style) => {
 		let lineLength = []
 		let letterBounds = []
 		let lines = 0
 		for (let i = 0; i < message.length; i++) {
-			let sample = new PIXI.Text(message[i], this.style);
+			let sample = new PIXI.Text(message[i], style)
 			let bounds = sample.getLocalBounds()
 			if (i !== 0) {
 				bounds.x += letterBounds[i - 1].bounds.x + letterBounds[i - 1].bounds.width

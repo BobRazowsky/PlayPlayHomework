@@ -1,17 +1,42 @@
 <template>
 	<div id="CustomizationUI">
 		<div class="wrapper">
-			<label>TEXTE</label>
-			<input type="text" name="message" v-model="$store.state.text" @change="textChanged">
+			<!-- TEXT CUSTOMIZATION -->
+			<label for="message">TEXTE</label>
+
+			<input
+				name="message"
+				type="text"
+				v-model="$store.state.text"
+				@change="textChanged"
+				@focus="$event.target.select()">
+
 			<FontSelect @fontChanged="fontChanged" />
-			<ColorPicker :color="hexToBinary($store.state.textBackground)" label="Background" @colorChanged="backgroundTextColorChanged"/>
-			<ColorPicker :color="hexToBinary($store.state.textColor)" label="Main" @colorChanged="textColorChanged"/>
+
+			<ColorPicker
+				label="Background"
+				:color="hexToBinary($store.state.textBackground)"
+				@colorChanged="backgroundTextColorChanged"/>
+
+			<ColorPicker
+				label="Main"
+				:color="hexToBinary($store.state.textColor)"
+				@colorChanged="textColorChanged"/>
 		</div>
 		<div class="separator"></div>
 		<div class="wrapper">
+			<!-- BACKGROUND CUSTOMIZATION -->
 			<label>BACKGROUND</label>
-			<ColorPicker :color="hexToBinary($store.state.backgroundColor)" label="Background" @colorChanged="backgroundChanged"/>
-			<ColorPicker :color="hexToBinary($store.state.backgroundDecorationsColor)" label="Decorations" @colorChanged="backgroundDecorationsChanged"/>
+
+			<ColorPicker
+				label="Background"
+				:color="hexToBinary($store.state.backgroundColor)"
+				@colorChanged="backgroundChanged"/>
+
+			<ColorPicker
+				label="Decorations"
+				:color="hexToBinary($store.state.backgroundDecorationsColor)"
+				@colorChanged="backgroundDecorationsChanged"/>
 		</div>
 	</div>
 </template>
@@ -32,7 +57,6 @@ export default {
 	},
 	methods: {
 		refreshPreview () {
-			console.log('REFRESHING')
 			PixiManager.refresh()
 		},
 
@@ -86,6 +110,13 @@ export default {
 
 		label {
 			font-size: 22px;
+		}
+
+		input {
+			border-radius: 3px;
+			outline: none;
+			border: 1px solid black;
+			height: 30px;
 		}
 	}
 

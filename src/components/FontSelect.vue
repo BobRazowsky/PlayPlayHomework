@@ -27,6 +27,9 @@ export default {
 
 <style lang="less" scoped>
 #FontSelect {
-
+	select {
+		border-radius: 3px;
+		height: 30px;
+	}
 }
 </style>
